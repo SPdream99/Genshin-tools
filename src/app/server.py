@@ -78,5 +78,4 @@ def register():
 @app.route('/characters', methods =['GET', 'POST'])
 def CharactersList():
     list=[]
-    
     return render_template("character_list.html",list=list)
