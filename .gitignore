@@ -1,4 +1,4 @@
-**/(Not sync)
-**/.vscode
-**/__pycache__
+(Not sync)
+.vscode
+__pycache__
 pyvenv.cfg
