@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %} Main {% endblock %}
+{% block content %}
+    </br></br></br></br></br>
+    <div align="center">
+        <div align="center" class="border">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                {% for c in list[1] %}
+                <div>
+                    <img class="h-auto max-w-full rounded-lg" src={{c}} alt="">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
