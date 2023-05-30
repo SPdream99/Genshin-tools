@@ -73,9 +73,14 @@ def register():
             msg = 'You have successfully registered !'
     elif request.method == 'POST':
         msg = 'Please fill out the form !'
-    return render_template('register.html', msg = msg)
+    if ss.check_loggedin():
+        return redirect(url_for("index"))
+    else:
+        return render_template('register.html', msg = msg)
 
 @app.route('/characters', methods =['GET', 'POST'])
 def CharactersList():
     list=[]
+    list.append(gAPI.get_character_list())
+    list.append(gAPI.get_character_img())
     return render_template("character_list.html",list=list)
