@@ -30,13 +30,14 @@
       href="{{ url_for('static',filename='styles/normalize.css') }}"
     />
   </head>
+
   <body>
-    {% include 'navbar.html' %}
+    {% include 'sidenav.html' %} {% include 'navbar.html' %}
     <div id="content">{% block content %} {% endblock %}</div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.5/flowbite.min.js"></script>
     <script
       src="https://code.jquery.com/jquery-3.7.0.min.js"
       crossorigin="anonymous"
     ></script>
+    <script src="{{ url_for('static', filename='node_modules/tw-elements/dist/js/tw-elements.umd.min.js') }}"></script>
   </body>
 </html>
