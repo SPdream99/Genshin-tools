@@ -11,3 +11,15 @@ def get_character_img():
     for i in range(len(d)):
         data.append("https://api.genshin.dev/characters/{}/card".format(d[i]))
     return data
+class Character:
+  def __init__(self, name, age):
+    self.name = name
+    self.age = age
+
+def get_character_info():
+    return []
+
+def get_element_img(list):
+    if list!=None:
+        return list
+    return []

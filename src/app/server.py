@@ -80,7 +80,8 @@ def register():
 
 @app.route('/characters', methods =['GET', 'POST'])
 def CharactersList():
-    list=[]
-    list.append(gAPI.get_character_list())
-    list.append(gAPI.get_character_img())
+    c_list=i_list=[]
+    c_list=gAPI.get_character_list()
+    i_list=gAPI.get_character_img()
+    list=zip(c_list,i_list)
     return render_template("character_list.html",list=list)

@@ -32,8 +32,9 @@
   </head>
 
   <body>
-    {% include 'sidenav.html' %} {% include 'navbar.html' %}
-    <div id="content">{% block content %} {% endblock %}</div>
+    {% include 'sidenav.html' %}{% include 'navbar.html' %}
+    <div id="content" class="mt-20">{% block content %}{% endblock %}</div>
+    {% include 'footer.html' %}
     <script
       src="https://code.jquery.com/jquery-3.7.0.min.js"
       crossorigin="anonymous"
