@@ -1,8 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, session, abort,make_response
+from flask import Flask, render_template, request, redirect, url_for, session, abort
 from flask_mysqldb import MySQL
+import sys
 import MySQLdb.cursors
 import re
 import serverside as ss
+import clientside as cs
 import genshinAPI as gAPI
 import wikiaAPI as wAPI
 
@@ -17,13 +19,6 @@ mysql = MySQL(app)
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('Errors/404.html'), 404
-
-@app.route('/cookie/<method>', methods = ['POST', 'GET'])
-def setcookie(method):
-   if request.method == 'POST' and method=="set":
-    resp = make_response(render_template('readcookie.html'))
-    resp.set_cookie('credentials', )
-    return resp
 
 @app.route('/')
 def index():
@@ -47,7 +42,8 @@ def login():
             session['id'] = account['id']
             session['username'] = account['username']
             msg = 'Logged in successfully !'
-            return redirect(url_for('index'))
+            cre=ss.make_credentials()
+            return cs.write_cookie("cre",cre,60*60*24*399,url_for("index"))
         else:
             msg = 'Incorrect username / password !'
     if ss.check_loggedin():
