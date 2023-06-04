@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, abort,make_response
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
@@ -13,6 +13,17 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123'
 app.config['MYSQL_DB'] = 'login'
 mysql = MySQL(app)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('Errors/404.html'), 404
+
+@app.route('/cookie/<method>', methods = ['POST', 'GET'])
+def setcookie(method):
+   if request.method == 'POST' and method=="set":
+    resp = make_response(render_template('readcookie.html'))
+    resp.set_cookie('credentials', )
+    return resp
 
 @app.route('/')
 def index():
@@ -77,6 +88,18 @@ def register():
         return redirect(url_for("index"))
     else:
         return render_template('register.html', msg = msg)
+
+@app.route('/characters/<char>/star/<check>', methods =['GET', 'POST'])
+def character_star(star,check):
+    return render_template(url_for("character_list.html"))
+
+@app.route('/characters/<char>', methods =['GET', 'POST'])
+def character(char):
+    list=gAPI.get_character_list()
+    if char in list:
+        return render_template("character.html",name=char)
+    else:
+        abort(404)
 
 @app.route('/characters', methods =['GET', 'POST'])
 def CharactersList():
