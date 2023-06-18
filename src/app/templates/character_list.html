@@ -3,66 +3,68 @@ content %}
 <div align="center">
   <div class="w-full h-1/2">
     <div class="mb-3 px-20">
+      <div class="flex justify-around">
+        <div class="max-h-8">
+          <button onclick="filter('4','list',['rare-'])">
+            <p class="text-yellow-300">4⭐</p>
+          </button>
+          <button onclick="filter('5','list',['rare-'])">
+            <p class="text-yellow-300">5⭐</p>
+          </button>
+        </div>
+        <div class="max-h-8">
+          {% for i in e_list %}
+          <button onclick="filter('{{ i }}','list',['elem-'])">
+            <img src="https://api.genshin.dev/elements/{{ i }}/icon" alt="">
+          </button>
+          {% endfor %}
+        </div>
+      </div>
       <div class="relative mb-4 flex w-full flex-wrap items-stretch">
-        <input
-          type="search"
+        <input type="search" id="search_bar"
           class="relative m-0 block w-[1px] min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
-          placeholder="Search"
-          aria-label="Search"
-          aria-describedby="button-addon2"
-        />
+          placeholder="Search" aria-label="Search" aria-describedby="button-addon2"
+          oninput="filter(this.value,'list')" />
 
         <!--Search icon-->
         <span
           class="input-group-text flex items-center whitespace-nowrap rounded px-3 py-1.5 text-center text-base font-normal text-neutral-700 dark:text-neutral-200"
-          id="basic-addon2"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            class="h-5 w-5"
-          >
-            <path
-              fill-rule="evenodd"
+          id="basic-addon2">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+            <path fill-rule="evenodd"
               d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-              clip-rule="evenodd"
-            />
+              clip-rule="evenodd" />
           </svg>
         </span>
       </div>
     </div>
   </div>
   <div align="center" class="border">
-    <div class="z-0 grid grid-cols-3 md:grid-cols-4 gap-1 md:gap-7 md:w-3/4">
+    <div class="z-0 grid grid-cols-3 md:grid-cols-4 gap-1 md:gap-7 md:w-3/4" id="list">
       {% for i in list %}
-      <div
-        class="relative block rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700"
-      >
+      <div class="relative block rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700 rare-{{ ic_list[i]["rarity"] }} elem-{{
+          ic_list[i]["vision"]|lower }}">
+        <div class="absolute top-0 left-0 px-4 py-1 bg-gray-800 opacity-70 max-h-7 h-7">
+          <p class="text-yellow-300">{{ ic_list[i]["rarity"] }}⭐</p>
+        </div>
+        <div class="absolute top-8 left-0 px-4 py-2 bg-gray-800 opacity-70">
+          <img class="w-8" src="https://api.genshin.dev/elements/{{
+          ic_list[i]["vision"] |lower }}/icon" alt="" />
+        </div>
         <div class="absolute top-0 right-0 px-4 py-2 bg-gray-800 opacity-70">
           <button>
-            <svg
-              style="color: #f3da35"
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              fill="currentColor"
-              class="bi bi-star"
-              viewBox="0 0 16 16"
-            >
+            <svg style="color: #f3da35" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+              class="bi bi-star" viewBox="0 0 16 16">
               <path
                 d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"
-                fill="#f3da35"
-              ></path>
+                fill="#f3da35"></path>
             </svg>
           </button>
         </div>
-        <a href="/characters/{{ i[0] }}">
-          <img class="rounded-t-lg" src="{{ i[1] }}" alt="" />
-          <div
-            class="absolute bottom-0 left-0 right-0 px-4 py-2 bg-gray-800 opacity-70"
-          >
-            <h3 class="text-xl text-white font-bold">{{ i[0]|capitalize }}</h3>
+        <a href="/characters/{{ i }}">
+          <img class="rounded-t-lg" src="https://api.genshin.dev/characters/{{ i }}/card" alt="" />
+          <div class="absolute bottom-0 left-0 right-0 px-4 py-2 bg-gray-800 opacity-70">
+            <h3 class="text-xl text-white font-bold">{{ i|capitalize }}</h3>
           </div>
         </a>
       </div>

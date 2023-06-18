@@ -20,6 +20,10 @@ mysql = MySQL(app)
 def page_not_found(e):
     return render_template('Errors/404.html'), 404
 
+@app.errorhandler(404)
+def server_error(e):
+    return render_template('Errors/500.html'), 500
+
 @app.route('/')
 def index():
     msg=''
@@ -99,8 +103,16 @@ def character(char):
 
 @app.route('/characters', methods =['GET', 'POST'])
 def CharactersList():
-    c_list=i_list=[]
+    c_list=[]
+    ic_list={}
+    e_list=[]
     c_list=gAPI.get_character_list()
-    i_list=gAPI.get_character_img()
-    list=zip(c_list,i_list)
-    return render_template("character_list.html",list=list)
+    ic_list=gAPI.get_character()
+    e_list=gAPI.get_element_list()
+    return render_template("character_list.html",list=c_list,ic_list=ic_list,e_list=e_list)
+
+@app.route('/weapons', methods =['GET', 'POST'])
+def WeaponsList():
+    w_list=[]
+    w_list=gAPI.get_weapon_list()
+    return render_template("weapon_list.html",list=w_list)
