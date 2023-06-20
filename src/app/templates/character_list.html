@@ -2,9 +2,9 @@
 content %}
 <div align="center">
   <div class="w-full h-1/2">
-    <div class="mb-3 px-20">
-      <div class="flex justify-around">
-        <div class="max-h-8">
+    <div class="mb-3 px-20 flex flex-col">
+      <div class="flex justify-around items-center py-5">
+        <div>
           <button onclick="filter('4','list',['rare-'])">
             <p class="text-yellow-300">4⭐</p>
           </button>
@@ -12,10 +12,10 @@ content %}
             <p class="text-yellow-300">5⭐</p>
           </button>
         </div>
-        <div class="max-h-8">
+        <div>
           {% for i in e_list %}
           <button onclick="filter('{{ i }}','list',['elem-'])">
-            <img src="https://api.genshin.dev/elements/{{ i }}/icon" alt="">
+            <img class="h-fit" src="https://api.genshin.dev/elements/{{ i }}/icon" alt="">
           </button>
           {% endfor %}
         </div>
@@ -62,9 +62,9 @@ content %}
           </button>
         </div>
         <a href="/characters/{{ i }}">
-          <img class="rounded-t-lg" src="https://api.genshin.dev/characters/{{ i }}/card" alt="" />
+          <img referrerpolicy="no-referrer" class="rounded-t-lg" src="{{ ic_list[i]["img"]}}" alt="" />
           <div class="absolute bottom-0 left-0 right-0 px-4 py-2 bg-gray-800 opacity-70">
-            <h3 class="text-xl text-white font-bold">{{ i|capitalize }}</h3>
+            <h3 class="text-xl text-white font-bold">{{ ic_list[i]["name"]|title }}</h3>
           </div>
         </a>
       </div>

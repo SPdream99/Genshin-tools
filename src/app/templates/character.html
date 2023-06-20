@@ -1,10 +1,34 @@
-{% extends 'base.html' %} {% block title %} {{name|capitalize}} {% endblock %}
+{% extends 'base.html' %} {% block title %} {{ char.name|title }} {% endblock %}
 {% block content %}
 <div align="center">
   <div align="center" class="border">
-    <div
-      class="z-0 grid grid-cols-3 md:grid-cols-4 gap-1 md:gap-7 md:w-3/4"
-    ></div>
+    <div class="md:w-3/4 flex flex-row">
+      <div class="flex flex-col w-1/5">
+        <div
+          class="bg-cover bg-center p-2 bg-slate-700"
+          style="background-image: url({{char.constellation_img}});"
+        >
+          <img src="{{ char.img }}" alt="" />
+        </div>
+        <div class="p-2 bg-zinc-900 text-white">
+          <p class="text-2xl">{{ char.name|title }}</p>
+          <p class="text-xl">{{ char.title|title }}</p>
+          <p>Rarity: {{ char.rarity }}⭐</p>
+          <p>
+            Vision:
+            <img
+              class="w-4 inline-block"
+              src="https://api.genshin.dev/elements/{{ char.vision|lower }}/icon"
+              alt=""
+            />{{ char.vision }}
+          </p>
+          <p>Constellation: {{ char.constellation }}</p>
+        </div>
+      </div>
+      <div class="flex flex-col w-4/5">
+        <div class="max-w-full w-full"></div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

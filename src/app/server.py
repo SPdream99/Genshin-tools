@@ -20,8 +20,8 @@ mysql = MySQL(app)
 def page_not_found(e):
     return render_template('Errors/404.html'), 404
 
-@app.errorhandler(404)
-def server_error(e):
+@app.errorhandler(500)
+def internal_error(e):
     return render_template('Errors/500.html'), 500
 
 @app.route('/')
@@ -97,7 +97,7 @@ def character_star(star,check):
 def character(char):
     list=gAPI.get_character_list()
     if char in list:
-        return render_template("character.html",name=char)
+        return render_template("character.html",char=gAPI.get_character(char))
     else:
         abort(404)
 

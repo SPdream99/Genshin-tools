@@ -1,4 +1,5 @@
 function filter(n, l, key = null) {
+  n = n.toLowerCase();
   list = document.getElementById(l).children;
   if (key != null) {
     for (const i of list) {

@@ -1,15 +1,22 @@
 import requests, json, os
-
+import wikiaAPI
+link="https://raw.githubusercontent.com/genshindev/api/mistress/assets/data"
 def get_character_list():
-    r = requests.get('https://api.genshin.dev/characters')
-    data = r.text
-    return json.loads(data)
+    l=[]
+    ban=['traveler','lumine','aether','crossover characters', 'event-exclusive characters', 'non-wish characters', 'playable characters by region', 'standard wish characters','traveler (unaligned)']
+    data=wikiaAPI.get_data("genshin-impact","en","Playable_Characters")
+    for i in range(len(data)):
+        if(data[i]["title"].lower() not in ban):
+            o=data[i]["title"].lower()
+            o=o.replace(" ","-").replace("(","").replace(")","")
+            l.append(o)
+    return l
 
 def get_character(name=None):
     if name!=None:
-        r = requests.get('https://api.genshin.dev/characters/{}'.format(name))
+        r = requests.get('{}/characters/{}/en.json'.format(link,name))
         o=json.loads(r.text)
-        return Character(o["name"],"https://api.genshin.dev/characters/{}/portrait".format(name),o["title"],o["vision"],o["weapon"],o["nation"],o["affiliation"],o["rarity"],o["constellation"])
+        return Character(name,o["name"],get_character_image(o["name"],"Full_Wish","Card"),o["title"],o["vision"],o["weapon"],o["nation"],o["affiliation"],o["rarity"],o["constellation"],get_character_image(o["constellation"],""))
     else:
         try:
             if(os.stat("./static/assets/character_list.json").st_size > 0):
@@ -28,13 +35,65 @@ def update_list():
     data = get_character_list()
     lo={}
     for i in range(len(data)):
-        r = requests.get('https://api.genshin.dev/characters/{}'.format(data[i]))
-        o=json.loads(r.text)
-        lo.update({data[i]:o})
+        try:
+            r = requests.get('{}/characters/{}/en.json'.format(link,data[i]))
+            if(r.text!="404: Not Found"):
+                o=json.loads(r.text)
+                o.update({'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                lo.update({data[i]:o})
+            else:
+                r = requests.get('{}/characters/{}/{}.json'.format(link,data[i],data[i]))
+                if(r.text!="404: Not Found"):
+                    o=json.loads(r.text)
+                    o.update({'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                    lo.update({data[i]:o})
+                else:
+                    if("-" in data[i]):
+                        r = requests.get('{}/characters/{}/en.json'.format(link,data[i].split("-")[1]))
+                        if(r.text!="404: Not Found"):
+                            o=json.loads(r.text)
+                            o.update({'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                            lo.update({data[i]:o})
+                        else:
+                            if("-" in data[i]):
+                                r = requests.get('{}/characters/{}/{}.json'.format(link,data[i].split("-")[1],data[i].split("-")[1]))
+                                if(r.text!="404: Not Found"):
+                                    o=json.loads(r.text)
+                                    o.update({'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                                    lo.update({data[i]:o})
+                                else:
+                                    if("-" in data[i]):
+                                        r = requests.get('{}/characters/{}/en.json'.format(link,data[i].split("-")[0]))
+                                        if(r.text!="404: Not Found"):
+                                            o=json.loads(r.text)
+                                            o.update({'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                                            lo.update({data[i]:o})
+                                    else:
+                                        if("-" in data[i]):
+                                            r = requests.get('{}/characters/{}/{}.json'.format(link,data[i].split("-")[1],data[i].split("-")[0]))
+                                            if(r.text!="404: Not Found"):
+                                                o=json.loads(r.text)
+                                                o.update({'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                                                lo.update({data[i]:o})
+        except:
+            pass
     f = open("./static/assets/character_list.json", "w")
     json.dump(lo, f)
     f.close()
     return lo
+
+def get_character_image(name,need,alt="Noway"):
+    data=wikiaAPI.get_image("gensin-impact",(f"{'Character_' if ('Full_Wish' in need) else ''}{name.replace(' ','_')}{'_' if (need!='') else ''}{need}.png"))
+    if data!=False:
+        return data
+    else:
+        data=wikiaAPI.get_image("gensin-impact",(f"{'Character_' if ('Full_Wish' in alt) else ''}{name.replace(' ','_')}{'_' if (alt!='') else ''}{alt}.png"))
+        if data!=False:
+            return data
+        else:
+            if "Card" not in need and "Full_Wish" not in need:
+                need="Constellation"
+            return "/static/assets/images/no_{}.png".format(need)
 
 def get_weapon_list():
     r = requests.get('https://api.genshin.dev/weapons')
@@ -42,7 +101,8 @@ def get_weapon_list():
     return json.loads(data)
 
 class Character:
-  def __init__(self, name, img, title, vision, weapon, nation, aff, rarity, constellation):
+  def __init__(self,i, name, img, title, vision, weapon, nation, aff, rarity, constellation,constellation_img):
+    self.id = i
     self.name = name
     self.img = img
     self.title = title
@@ -52,6 +112,7 @@ class Character:
     self.aff = aff
     self.rarity = rarity
     self.constellation = constellation
+    self.constellation_img=constellation_img
 class Weapon:
   def __init__(self, name):
     self.name = name
