@@ -14,9 +14,19 @@ def get_character_list():
 
 def get_character(name=None):
     if name!=None:
-        r = requests.get('{}/characters/{}/en.json'.format(link,name))
+        lo={}
+        try:
+            if(os.stat("./static/assets/character_list.json").st_size > 0):
+                f=open("./static/assets/character_list.json","r")
+                lo=json.load(f)
+                f.close()
+            else:
+                lo=update_list()
+        except:
+            lo=update_list()
+        r = requests.get(lo[name]["link"])
         o=json.loads(r.text)
-        return Character(name,o["name"],get_character_image(o["name"],"Full_Wish","Card"),o["title"],o["vision"],o["weapon"],o["nation"],o["affiliation"],o["rarity"],o["constellation"],get_character_image(o["constellation"],""))
+        return Character(name,o["name"],get_character_image(o["name"],"Full_Wish","Card"),o["title"] if("title" in o) else "No title",o["vision"],o["weapon"],o["nation"],o["affiliation"],o["rarity"],o["constellation"],get_character_image(o["constellation"],""))
     else:
         try:
             if(os.stat("./static/assets/character_list.json").st_size > 0):
@@ -39,41 +49,41 @@ def update_list():
             r = requests.get('{}/characters/{}/en.json'.format(link,data[i]))
             if(r.text!="404: Not Found"):
                 o=json.loads(r.text)
-                o.update({'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                o.update({'link':'{}/characters/{}/en.json'.format(link,data[i]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
                 lo.update({data[i]:o})
             else:
                 r = requests.get('{}/characters/{}/{}.json'.format(link,data[i],data[i]))
                 if(r.text!="404: Not Found"):
                     o=json.loads(r.text)
-                    o.update({'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                    o.update({'link':'{}/characters/{}/{}.json'.format(link,data[i],data[i]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
                     lo.update({data[i]:o})
                 else:
                     if("-" in data[i]):
                         r = requests.get('{}/characters/{}/en.json'.format(link,data[i].split("-")[1]))
                         if(r.text!="404: Not Found"):
                             o=json.loads(r.text)
-                            o.update({'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                            o.update({'link':'{}/characters/{}/en.json'.format(link,data[i].split("-")[1]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
                             lo.update({data[i]:o})
                         else:
                             if("-" in data[i]):
                                 r = requests.get('{}/characters/{}/{}.json'.format(link,data[i].split("-")[1],data[i].split("-")[1]))
                                 if(r.text!="404: Not Found"):
                                     o=json.loads(r.text)
-                                    o.update({'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                                    o.update({'link':'{}/characters/{}/{}.json'.format(link,data[i].split("-")[1],data[i].split("-")[1]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
                                     lo.update({data[i]:o})
                                 else:
                                     if("-" in data[i]):
                                         r = requests.get('{}/characters/{}/en.json'.format(link,data[i].split("-")[0]))
                                         if(r.text!="404: Not Found"):
                                             o=json.loads(r.text)
-                                            o.update({'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                                            o.update({'link':'{}/characters/{}/en.json'.format(link,data[i].split("-")[0]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
                                             lo.update({data[i]:o})
                                     else:
                                         if("-" in data[i]):
                                             r = requests.get('{}/characters/{}/{}.json'.format(link,data[i].split("-")[1],data[i].split("-")[0]))
                                             if(r.text!="404: Not Found"):
                                                 o=json.loads(r.text)
-                                                o.update({'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                                                o.update({'link':'{}/characters/{}/{}.json'.format(link,data[i].split("-")[1],data[i].split("-")[0]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
                                                 lo.update({data[i]:o})
         except:
             pass

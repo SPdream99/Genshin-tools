@@ -4,17 +4,17 @@ content %}
   <div class="w-full h-1/2">
     <div class="mb-3 px-20 flex flex-col">
       <div class="flex justify-around items-center py-5">
-        <div>
-          <button onclick="filter('4','list',['rare-'])">
+        <div id="rarity">
+          <button class="rare-4" onclick="filter(this, ['elements','rarity'],'list',['elem-','rare-'])">
             <p class="text-yellow-300">4⭐</p>
           </button>
-          <button onclick="filter('5','list',['rare-'])">
+          <button class="rare-5" onclick="filter(this, ['elements','rarity'],'list',['elem-','rare-'])">
             <p class="text-yellow-300">5⭐</p>
           </button>
         </div>
-        <div>
+        <div id="elements">
           {% for i in e_list %}
-          <button onclick="filter('{{ i }}','list',['elem-'])">
+          <button class="elem-{{i|lower}}" onclick="filter(this, ['elements','rarity'],'list',['elem-','rare-'])">
             <img class="h-fit" src="https://api.genshin.dev/elements/{{ i }}/icon" alt="">
           </button>
           {% endfor %}
@@ -24,7 +24,7 @@ content %}
         <input type="search" id="search_bar"
           class="relative m-0 block w-[1px] min-w-0 flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
           placeholder="Search" aria-label="Search" aria-describedby="button-addon2"
-          oninput="filter(this.value,'list')" />
+          oninput="filter_text(this.value,'list')" />
 
         <!--Search icon-->
         <span
@@ -62,7 +62,7 @@ content %}
           </button>
         </div>
         <a href="/characters/{{ i }}">
-          <img referrerpolicy="no-referrer" class="rounded-t-lg" src="{{ ic_list[i]["img"]}}" alt="" />
+          <img referrerpolicy="no-referrer" class="rounded-t-lg h-full {% if 'traveler' in i %}object-left object-cover{% else %}object-fill{% endif %}" src="{{ ic_list[i]["img"]}}" alt="" />
           <div class="absolute bottom-0 left-0 right-0 px-4 py-2 bg-gray-800 opacity-70">
             <h3 class="text-xl text-white font-bold">{{ ic_list[i]["name"]|title }}</h3>
           </div>

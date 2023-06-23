@@ -1960,6 +1960,21 @@ video {
   fill: #fff;
 }
 
+.object-cover {
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.object-fill {
+  -o-object-fit: fill;
+     object-fit: fill;
+}
+
+.object-left {
+  -o-object-position: left;
+     object-position: left;
+}
+
 .p-0 {
   padding: 0px;
 }
@@ -2818,6 +2833,10 @@ video {
 
 ::-webkit-scrollbar-button{
   background: #181818;
+}
+
+.s-hidden{
+  display:none;
 }
 
 .selection\:bg-transparent *::-moz-selection {

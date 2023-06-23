@@ -1,20 +1,53 @@
-from flask import Flask, render_template, request, redirect, url_for, session, abort
+from flask import Flask, render_template, request, redirect, url_for, session, abort, jsonify
 from flask_mysqldb import MySQL
+from flask_mailing import Mail, Message
 import sys
 import MySQLdb.cursors
 import re
-import serverside as ss
+import serverside
 import clientside as cs
 import genshinAPI as gAPI
-import wikiaAPI as wAPI
+import os
+
+def c_print(c):
+    print(c, file=sys.stderr)
+
+if os.environ.get("email") and os.environ.get("password"):
+    mail_os=True
+else:
+    mail_os=False
 
 app = Flask(__name__)
 app.secret_key = 'Itsnew'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123'
-app.config['MYSQL_DB'] = 'login'
+app.config['MYSQL_DB'] = 'data'
+if mail_os:
+    app.config['MAIL_SERVER']='smtp.gmail.com'
+    app.config['MAIL_PORT'] = 587
+    app.config['MAIL_USERNAME'] = os.environ.get("email")
+    app.config['MAIL_PASSWORD'] = os.environ.get("password")
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USE_SSL'] = False
+    app.config['TESTING'] = False
+    mail = Mail(app)
 mysql = MySQL(app)
+ss=serverside.mysql(mysql)
+
+@app.before_request
+def check_login():
+    if ss.check_loggedin():
+        return
+    checked=ss.check_cre()
+    if checked[0]:
+        session['loggedin'] = True
+        session['id'] = checked[1]
+        session['username'] = checked[2]
+        return
+    if cs.get_cookie("cre")!=None:
+        return cs.logout(request.referrer)
+    return
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -23,6 +56,19 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_error(e):
     return render_template('Errors/500.html'), 500
+
+@app.route('/send_email')
+async def mailing():
+    if mail_os:
+        message = Message(
+            subject="Flask-Mailing module test html mail",
+            recipients=["anhnguyennhat878@gmail.com"],
+            body="This is the basic email body"
+            )
+        await mail.send_message(message)
+        return jsonify(status_code=200, content={"message": "email has been sent"})
+    else:
+        return ""
 
 @app.route('/')
 def index():
@@ -38,16 +84,16 @@ def login():
     if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
         username = request.form['username']
         password = request.form['password']
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE username = % s AND password = % s', (username, password, ))
-        account = cursor.fetchone()
+        account=ss.get_account(username, password)
         if account:
             session['loggedin'] = True
             session['id'] = account['id']
             session['username'] = account['username']
             msg = 'Logged in successfully !'
-            cre=ss.make_credentials()
-            return cs.write_cookie("cre",cre,60*60*24*399,url_for("index"))
+            if(request.form.get('remember')=="remembered"):
+                ss.remove_cre()
+                cre=ss.make_credentials(account['id'],account['username'])
+                return cs.write_cookie("cre",cre,60*60*24*399,url_for("index"))
         else:
             msg = 'Incorrect username / password !'
     if ss.check_loggedin():
@@ -57,8 +103,8 @@ def login():
 
 @app.route('/logout')
 def logout():
-    ss.logout()
-    return redirect(request.referrer)
+    ss.remove_cre()
+    return cs.logout(request.referrer)
 
 @app.route('/register', methods =['GET', 'POST'])
 def register():
@@ -67,9 +113,7 @@ def register():
         username = request.form['username']
         password = request.form['password']
         email = request.form['email']
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM accounts WHERE username = % s', (username, ))
-        account = cursor.fetchone()
+        account=ss.check_account(username)
         if account:
             msg = 'Account already exists !'
         elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
@@ -79,8 +123,7 @@ def register():
         elif not username or not password or not email:
             msg = 'Please fill out the form !'
         else:
-            cursor.execute('INSERT INTO accounts VALUES (NULL, % s, % s, % s)', (username, password, email, ))
-            mysql.connection.commit()
+            ss.add_account(username, password, email )
             msg = 'You have successfully registered !'
     elif request.method == 'POST':
         msg = 'Please fill out the form !'

@@ -24,3 +24,7 @@
 ::-webkit-scrollbar-button{
   background: #181818; 
 }
+
+.s-hidden{
+  display:none;
+}
