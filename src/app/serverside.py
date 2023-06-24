@@ -67,7 +67,8 @@ class mysql:
         mysql.connection.commit()
         account=self.check_account(username)
         if account:
-            cursor.execute('INSERT INTO storage VALUES (% s, % s, NULL, NULL)',(account["id"],username))
+            j=json.dumps({})
+            cursor.execute(f'INSERT INTO storage VALUES (% s, % s, "[]", % s)',(account["id"],username,j))
             mysql.connection.commit()
 
     def get_account(self,username, password):

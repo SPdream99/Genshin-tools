@@ -2947,6 +2947,10 @@ video {
   visibility:visible;
 }
 
+.f-enable{
+  background-color: aqua;
+}
+
 .selection\:bg-transparent *::-moz-selection {
   background-color: transparent;
 }
