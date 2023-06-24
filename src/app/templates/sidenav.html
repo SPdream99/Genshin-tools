@@ -12,6 +12,16 @@
         <h5 class="mb-2 text-xl font-medium leading-tight">
           {{ session.username }}
         </h5>
+        {% if session.isVerified is defined: %} {% if not session.isVerified: %}
+        <p class="mb-0 mt-2 pt-1 text-sm font-semibold">
+          Please verify:
+          <a
+            href="{{ url_for('mail_verify') }}"
+            class="text-danger transition duration-150 ease-in-out hover:text-danger-600 focus:text-danger-600 active:text-danger-700"
+            >Verify</a
+          >
+        </p>
+        {% endif %} {% endif %}
         <br />
         <a href="{{ url_for('logout')}}"
           ><button

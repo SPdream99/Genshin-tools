@@ -26,7 +26,7 @@ def get_character(name=None):
             lo=update_list()
         r = requests.get(lo[name]["link"])
         o=json.loads(r.text)
-        return Character(name,o["name"],get_character_image(o["name"],"Full_Wish","Card"),o["title"] if("title" in o) else "No title",o["vision"],o["weapon"],o["nation"],o["affiliation"],o["rarity"],o["constellation"],get_character_image(o["constellation"],""))
+        return Character(name,o["name"],get_character_image(o["name"],"Full_Wish","Card"),o["title"] if("title" in o) else "No title",o["vision"],o["weapon"],o["nation"],o["affiliation"],o["rarity"],o["constellation"],get_character_image(o["constellation"],""),o["skillTalents"],o["passiveTalents"],o["constellations"])
     else:
         try:
             if(os.stat("./static/assets/character_list.json").st_size > 0):
@@ -111,7 +111,7 @@ def get_weapon_list():
     return json.loads(data)
 
 class Character:
-  def __init__(self,i, name, img, title, vision, weapon, nation, aff, rarity, constellation,constellation_img):
+  def __init__(self,i, name, img, title, vision, weapon, nation, aff, rarity, constellation,constellation_img,skillTalents,passiveTalents,constellations):
     self.id = i
     self.name = name
     self.img = img
@@ -123,6 +123,9 @@ class Character:
     self.rarity = rarity
     self.constellation = constellation
     self.constellation_img=constellation_img
+    self.skillTalents=skillTalents
+    self.passiveTalents=passiveTalents
+    self.constellations=constellations
 class Weapon:
   def __init__(self, name):
     self.name = name

@@ -60,3 +60,61 @@ function check_include(v, l) {
   }
   return false;
 }
+
+function star_character(cl, l) {
+  list = document.getElementById(l).children;
+  for (const i of list) {
+    i.classList.remove("star-n");
+    i.classList.remove("star-y");
+    if (cl.includes(i.id.toLowerCase())) {
+      if (!i.classList.contains("star-y")) {
+        i.classList.add("star-y");
+      }
+    } else {
+      if (!i.classList.contains("star-n")) {
+        i.classList.add("star-n");
+      }
+    }
+  }
+}
+
+function star(char) {
+  fetch(`/characters/star/check`, {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: char,
+    }),
+  })
+    .then((response) => response.json())
+    .then((response) => {
+      check = response;
+      if (check.status_code == 200) {
+        fetch(`/characters/star/list`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((response) => {
+            check = response;
+            if (check.status_code == 200) {
+              if (check.content.char == null) {
+                char_list = [];
+              } else {
+                char_list = check.content.char;
+              }
+              console.log(char_list);
+              star_character(char_list, "list");
+            }
+          });
+      } else if (check.status_code == 400) {
+        location.reload();
+      }
+    });
+}

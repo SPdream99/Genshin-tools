@@ -4,17 +4,25 @@ content %}
   <div class="w-full h-1/2">
     <div class="mb-3 px-20 flex flex-col">
       <div class="flex justify-around items-center py-5">
+        <div id="stars">
+          <button class="star-y" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
+            <p class="text-yellow-300">Checked</p>
+          </button>
+          <button class="star-n" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
+            <p class="text-yellow-300">Uncheck</p>
+          </button>
+        </div>
         <div id="rarity">
-          <button class="rare-4" onclick="filter(this, ['elements','rarity'],'list',['elem-','rare-'])">
+          <button class="rare-4" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
             <p class="text-yellow-300">4⭐</p>
           </button>
-          <button class="rare-5" onclick="filter(this, ['elements','rarity'],'list',['elem-','rare-'])">
+          <button class="rare-5" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
             <p class="text-yellow-300">5⭐</p>
           </button>
         </div>
         <div id="elements">
           {% for i in e_list %}
-          <button class="elem-{{i|lower}}" onclick="filter(this, ['elements','rarity'],'list',['elem-','rare-'])">
+          <button class="elem-{{ i|lower }}" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
             <img class="h-fit" src="https://api.genshin.dev/elements/{{ i }}/icon" alt="">
           </button>
           {% endfor %}
@@ -43,7 +51,7 @@ content %}
     <div class="z-0 grid grid-cols-3 md:grid-cols-4 gap-1 md:gap-7 md:w-3/4" id="list">
       {% for i in list %}
       <div class="relative block rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700 rare-{{ ic_list[i]["rarity"] }} elem-{{
-          ic_list[i]["vision"]|lower }}">
+          ic_list[i]["vision"]|lower }} {% if i in s_list %}star-y{% else %}star-n{% endif %}" id="{{ i }}">
         <div class="absolute top-0 left-0 px-4 py-1 bg-gray-800 opacity-70 max-h-7 h-7">
           <p class="text-yellow-300">{{ ic_list[i]["rarity"] }}⭐</p>
         </div>
@@ -52,9 +60,15 @@ content %}
           ic_list[i]["vision"] |lower }}/icon" alt="" />
         </div>
         <div class="absolute top-0 right-0 px-4 py-2 bg-gray-800 opacity-70">
-          <button>
+          <button onclick="star('{{ i }}')">
             <svg style="color: #f3da35" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
               class="bi bi-star" viewBox="0 0 16 16">
+              <svg style="color: #f3da35" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                class="bi bi-star bi-star-in w-full contents" viewBox="0 0 16 16">
+                <path
+                  d="M 2.866 14.85 C 2.788 15.294 3.226 15.641 3.612 15.443 L 8.002 13.187 L 12.391 15.443 C 12.777 15.641 13.215 15.294 13.137 14.851 L 12.307 10.121 L 15.829 6.765 C 16.159 6.451 15.989 5.877 15.547 5.815 L 10.649 5.119 L 8.465 0.792 C 8.296 0.435 7.804 0.395 7.579 0.72 C 7.564 0.743 7.55 0.767 7.538 0.792 L 5.354 5.12 L 0.456 5.816 C 0.015 5.878 -0.156 6.452 0.173 6.766 L 3.696 10.122 L 2.866 14.852 L 2.866 14.85 Z"
+                  fill="#f3da35"></path>
+              </svg>
               <path
                 d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"
                 fill="#f3da35"></path>
@@ -62,7 +76,9 @@ content %}
           </button>
         </div>
         <a href="/characters/{{ i }}">
-          <img referrerpolicy="no-referrer" class="rounded-t-lg h-full {% if 'traveler' in i %}object-left object-cover{% else %}object-fill{% endif %}" src="{{ ic_list[i]["img"]}}" alt="" />
+          <img referrerpolicy="no-referrer"
+            class="rounded-t-lg h-full {% if 'traveler' in i %}object-left object-cover{% else %}object-fill{% endif %}"
+            src="{{ ic_list[i]["img"] }}" alt="" />
           <div class="absolute bottom-0 left-0 right-0 px-4 py-2 bg-gray-800 opacity-70">
             <h3 class="text-xl text-white font-bold">{{ ic_list[i]["name"]|title }}</h3>
           </div>

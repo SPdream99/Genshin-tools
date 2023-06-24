@@ -28,3 +28,11 @@
 .s-hidden{
   display:none;
 }
+
+.star-n .bi-star-in{
+  visibility:hidden;
+}
+
+.star-y .bi-star-in{
+  visibility:visible;
+}
