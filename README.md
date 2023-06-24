@@ -5,9 +5,9 @@
 ---
 
 ## Table of contents
-- [ Table of contents](#-table-of-contents)
-- [ Purpose](#-purpose)
-- [ Contents](#-contents)
+- [ Table of contents](#table-of-contents)
+- [ Purpose](#purpose)
+- [ Contents](#contents)
 
 ## Purpose
 - Product use for learning, not for commercial use
