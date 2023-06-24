@@ -3,27 +3,28 @@ content %}
 <div align="center">
   <div class="w-full h-1/2">
     <div class="mb-3 px-20 flex flex-col">
-      <div class="flex justify-around items-center py-5">
+      <h2 class="text-left font-bold text-sm px-1">Filter: </h2>
+      <div class="flex justify-around items-center py-3 bg-slate-600 rounded-sm">
         <div id="stars">
-          <button class="star-y" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
+          <button class="star-y px-2 py-3 border-cyan-500 border-4 rounded-sm" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
             <p class="text-yellow-300">Checked</p>
           </button>
-          <button class="star-n" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
+          <button class="star-n px-2 py-3 border-cyan-500 border-4 rounded-sm" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
             <p class="text-yellow-300">Uncheck</p>
           </button>
         </div>
         <div id="rarity">
-          <button class="rare-4" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
+          <button class="rare-4 px-4 py-3 border-cyan-500 border-4 rounded-sm" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
             <p class="text-yellow-300">4⭐</p>
           </button>
-          <button class="rare-5" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
+          <button class="rare-5 px-4 py-3 border-cyan-500 border-4 rounded-sm" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
             <p class="text-yellow-300">5⭐</p>
           </button>
         </div>
         <div id="elements">
           {% for i in e_list %}
-          <button class="elem-{{ i|lower }}" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
-            <img class="h-fit" src="https://api.genshin.dev/elements/{{ i }}/icon" alt="">
+          <button class="elem-{{ i|lower }} border-cyan-500 border-4 rounded-sm" onclick="filter(this, ['elements','rarity','stars'],'list',['elem-','rare-','star-'])">
+            <img class="p-2 object-fill w-10 h-10" src="https://api.genshin.dev/elements/{{ i }}/icon" alt="">
           </button>
           {% endfor %}
         </div>

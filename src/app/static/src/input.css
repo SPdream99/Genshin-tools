@@ -38,5 +38,6 @@
 }
 
 .f-enable{
-  background-color: aqua;
+  border-radius: 5px;
+  background-color: black;
 }

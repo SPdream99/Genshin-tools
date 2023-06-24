@@ -75,10 +75,7 @@ def internal_error(e):
 
 @app.route('/')
 def index():
-    if ss.check_loggedin():
-        return render_template('index.html')
-    else:
-        return redirect(url_for('login'))
+    return render_template('index.html')
 
 @app.route('/login', methods =['GET', 'POST'])
 def login():
