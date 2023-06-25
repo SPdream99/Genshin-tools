@@ -7,8 +7,6 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 `password` varchar(255) NOT NULL, 
 `email` varchar(100) NOT NULL,
 `isVerified` boolean NOT NULL DEFAULT False,
-`isPassChange` boolean NOT NULL DEFAULT False,
-`isEmailChange` boolean NOT NULL DEFAULT False,
 `VerifyCode` varchar(4) DEFAULT null,
 `CodeExpire` timestamp NOT NULL DEFAULT current_timestamp(),
 PRIMARY KEY (`id`) 

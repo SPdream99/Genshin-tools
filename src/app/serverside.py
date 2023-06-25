@@ -63,7 +63,7 @@ class mysql:
     def add_account(self,username,password,email):
         mysql=self.mysql
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('INSERT INTO accounts VALUES (NULL, % s, % s, % s,False,False,False,NULL,% s)', (username, password, email, datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=datetime.timezone.utc) ))
+        cursor.execute('INSERT INTO accounts VALUES (NULL, % s, % s, % s,False,NULL,% s)', (username, password, email, datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=datetime.timezone.utc) ))
         mysql.connection.commit()
         account=self.check_account(username)
         if account:
