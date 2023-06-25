@@ -1,5 +1,6 @@
 import requests, json, os
 import wikiaAPI
+import string
 link="https://raw.githubusercontent.com/genshindev/api/mistress/assets/data"
 def get_character_list():
     l=[]
@@ -24,9 +25,10 @@ def get_character(name=None):
                 lo=update_list()
         except:
             lo=update_list()
-        r = requests.get(lo[name]["link"])
-        o=json.loads(r.text)
-        return Character(name,o["name"],get_character_image(o["name"],"Full_Wish","Card"),o["title"] if("title" in o) else "No title",o["vision"],o["weapon"],o["nation"],o["affiliation"],o["rarity"],o["constellation"],get_character_image(o["constellation"],""),o["skillTalents"],o["passiveTalents"],o["constellations"])
+        # r = requests.get(lo[name]["link"])
+        # o = json.loads(r.text)
+        o = lo[name]
+        return Character(name,o["name"],get_character_image(o["name"],"Full_Wish","Card"),o["title"] if("title" in o) else "No title",o["vision"],o["weapon"],o["nation"],o["affiliation"],o["rarity"],o["constellation"],get_character_image(o["constellation"],""),o["skillTalents"],o["passiveTalents"],o["constellations"],o["img_list"])
     else:
         try:
             if(os.stat("./static/assets/character_list.json").st_size > 0):
@@ -49,47 +51,50 @@ def update_list():
             r = requests.get('{}/characters/{}/en.json'.format(link,data[i]))
             if(r.text!="404: Not Found"):
                 o=json.loads(r.text)
-                o.update({'link':'{}/characters/{}/en.json'.format(link,data[i]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                o.update({'img_list':get_skill_image(o),'link':'{}/characters/{}/en.json'.format(link,data[i]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
                 lo.update({data[i]:o})
             else:
                 r = requests.get('{}/characters/{}/{}.json'.format(link,data[i],data[i]))
                 if(r.text!="404: Not Found"):
                     o=json.loads(r.text)
-                    o.update({'link':'{}/characters/{}/{}.json'.format(link,data[i],data[i]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                    o.update({'img_list':get_skill_image(o),'link':'{}/characters/{}/{}.json'.format(link,data[i],data[i]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
                     lo.update({data[i]:o})
                 else:
                     if("-" in data[i]):
                         r = requests.get('{}/characters/{}/en.json'.format(link,data[i].split("-")[1]))
                         if(r.text!="404: Not Found"):
                             o=json.loads(r.text)
-                            o.update({'link':'{}/characters/{}/en.json'.format(link,data[i].split("-")[1]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                            o.update({'img_list':get_skill_image(o),'link':'{}/characters/{}/en.json'.format(link,data[i].split("-")[1]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
                             lo.update({data[i]:o})
                         else:
                             if("-" in data[i]):
                                 r = requests.get('{}/characters/{}/{}.json'.format(link,data[i].split("-")[1],data[i].split("-")[1]))
                                 if(r.text!="404: Not Found"):
                                     o=json.loads(r.text)
-                                    o.update({'link':'{}/characters/{}/{}.json'.format(link,data[i].split("-")[1],data[i].split("-")[1]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                                    o.update({'img_list':get_skill_image(o),'link':'{}/characters/{}/{}.json'.format(link,data[i].split("-")[1],data[i].split("-")[1]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
                                     lo.update({data[i]:o})
                                 else:
                                     if("-" in data[i]):
                                         r = requests.get('{}/characters/{}/en.json'.format(link,data[i].split("-")[0]))
                                         if(r.text!="404: Not Found"):
                                             o=json.loads(r.text)
-                                            o.update({'link':'{}/characters/{}/en.json'.format(link,data[i].split("-")[0]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                                            o.update({'img_list':get_skill_image(o),'link':'{}/characters/{}/en.json'.format(link,data[i].split("-")[0]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
                                             lo.update({data[i]:o})
                                     else:
                                         if("-" in data[i]):
                                             r = requests.get('{}/characters/{}/{}.json'.format(link,data[i].split("-")[1],data[i].split("-")[0]))
                                             if(r.text!="404: Not Found"):
                                                 o=json.loads(r.text)
-                                                o.update({'link':'{}/characters/{}/{}.json'.format(link,data[i].split("-")[1],data[i].split("-")[0]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                                                o.update({'img_list':get_skill_image(o),'link':'{}/characters/{}/{}.json'.format(link,data[i].split("-")[1],data[i].split("-")[0]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
                                                 lo.update({data[i]:o})
         except:
             pass
-    f = open("./static/assets/character_list.json", "w")
-    json.dump(lo, f)
-    f.close()
+    if len(o)>0:
+        f = open("./static/assets/character_list.json", "w")
+        json.dump(lo, f)
+        f.close()
+    else:
+        print("None")
     return lo
 
 def get_character_image(name,need,alt="Noway"):
@@ -111,7 +116,7 @@ def get_weapon_list():
     return json.loads(data)
 
 class Character:
-  def __init__(self,i, name, img, title, vision, weapon, nation, aff, rarity, constellation,constellation_img,skillTalents,passiveTalents,constellations):
+  def __init__(self,i, name, img, title, vision, weapon, nation, aff, rarity, constellation,constellation_img,skillTalents,passiveTalents,constellations,img_list):
     self.id = i
     self.name = name
     self.img = img
@@ -126,6 +131,7 @@ class Character:
     self.skillTalents=skillTalents
     self.passiveTalents=passiveTalents
     self.constellations=constellations
+    self.img_list=img_list
 class Weapon:
   def __init__(self, name):
     self.name = name
@@ -135,4 +141,32 @@ def get_element_list():
     data = r.text
     return json.loads(data)
 
+def get_skill_image(char):
+    def change(r,t):
+        for i in range(len(r)):
+            for x in range(len(t)):
+                if t[x] in r[i]:
+                    t[x]=r[i][1]
+        return t
+    replace=[["Constellation_A-Another_Round?.png","Constellation_A—Another_Round?.png"],["Constellation_Chained_Reaction.png","Constellation_Chained_Reactions.png"]]
+    talent=[f"Talent_{(x['name'].replace(' ','_'))}.png" for x in char["skillTalents"]]
+    talent[0]=f"{char['weapon_type'].capitalize()}_{char['vision_key'].capitalize()}.png"
+    # talent=[f"""{''.join([y for y in x if y in string.ascii_letters + '_'+"'"+"-"+"!"])}.png""" for x in talent]
+    # change(replace,talent)
+
+    p_talent=[f"Talent_{(x['name'].replace(' ','_'))}.png" for x in char["passiveTalents"]]
+    # p_talent=[f"""{''.join([y for y in x if y in string.ascii_letters + '_'+"'"+"-"+"!"])}.png""" for x in p_talent]
+    # change(replace,p_talent)
+
+    c=[f"Constellation_{(x['name'].replace(' ','_'))}.png" for x in char["constellations"]]
+    # c=[f"""{''.join([y for y in x if y in string.ascii_letters + '_'+"'"+"-"+"!"])}.png""" for x in c]
+    c=change(replace,c)
+    print(talent[0])
+    return {
+        "weapon": wikiaAPI.get_image("gensin-impact",f"Icon_{(char['weapon_type']).capitalize()}.png"),
+        "skillTalents":[wikiaAPI.get_image("gensin-impact",x) for x in talent],
+        "passiveTalents":[wikiaAPI.get_image("gensin-impact",x) for x in p_talent],
+        "constellations":[wikiaAPI.get_image("gensin-impact",x) for x in c],
+        }
+# print(get_skill_image(get_character("klee")))
 # update_list()

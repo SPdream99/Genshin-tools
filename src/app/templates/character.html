@@ -3,49 +3,336 @@
 <div align="center">
   <div align="center" class="border">
     <div class="md:w-3/4 flex flex-row bg-zinc-900 text-white p-2 rounded-md">
-      <div class="flex flex-col w-1/3 p-3 border-slate-100 border-solid border-4">
-        <div class="bg-cover bg-center p-2 bg-slate-700 rounded-md border-slate-100 border-solid border-2"
-          style="background-image: url({{ char.constellation_img }}?width=100&height=100);">
-          <img referrerpolicy="no-referrer" src="{{ char.img }}?width=100&height=100" alt="" />
+      <div
+        class="flex flex-col w-1/3 p-3 border-slate-100 border-solid border-4"
+      >
+        <div
+          class="bg-cover bg-center p-2 bg-slate-700 rounded-md border-slate-100 border-solid border-2"
+          style="background-image: url({{ char.constellation_img }}?width=100&height=100);"
+        >
+          <img
+            referrerpolicy="no-referrer"
+            src="{{ char.img }}?width=100&height=100"
+            alt=""
+          />
         </div>
-        <div class="p-4 border-slate-100 border-solid border-2">
+        <div class="p-4 border-slate-100 border-solid border-2 mb-4">
           <p class="text-2xl font-bold">{{ char.name|title }}</p>
           <p class="text-xl">{{ char.title|title }}</p>
-          <p>Rarity: {{ char.rarity }}⭐</p>
-          <p>
+          <p class="text-left my-2">Rarity: {{ char.rarity }}⭐</p>
+          <p class="text-left my-2">
             Vision:
-            <img class="w-4 inline-block" src="https://api.genshin.dev/elements/{{ char.vision|lower }}/icon"
-              alt="" />{{ char.vision }}
+            <img
+              class="w-4 object-fill inline-block"
+              src="https://api.genshin.dev/elements/{{ char.vision|lower }}/icon"
+              alt=""
+            />{{ char.vision }}
           </p>
-          <p>Weapon: {{char.weapon|title}}</p>
-          <p>Constellation: {{ char.constellation }}</p>
+          <p class="text-left my-2">
+            Weapon:
+            <img
+              class="w-5 object-fill inline-block"
+              src="{{ img.weapon }}"
+              alt=""
+            />{{ char.weapon|title }}
+          </p>
+          <p class="text-left my-2">Constellation: {{ char.constellation }}</p>
+          <p class="text-left my-2">Nation: {{ char.nation }}</p>
+          <p class="text-left my-2">Affiliation: {{ char.aff }}</p>
+        </div>
+        <h3 class="text-xl font-bold mb-4">Materials</h3>
+        <div class="flex flex-col left" id="mat_check">
+          <div
+            class="mb-[0.125rem] min-h-[1.5rem] flex justify-between items-center"
+          >
+            <p
+              class="inline-block pl-[0.15rem] hover:cursor-pointer"
+              for="lv_box"
+            >
+              Level:
+            </p>
+            <div class="inline-block">
+              <select data-te-select-init id="lv_box">
+                <option value="1">Start</option>
+                {% for i in range(2,91) %}
+                <option value="{{ i }}">Lv.{{ i }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div
+            class="mb-[0.125rem] min-h-[1.5rem] flex justify-between items-center my-2"
+          >
+            <p
+              class="inline-block pl-[0.15rem] hover:cursor-pointer"
+              for="as_box"
+            >
+              Ascensions:
+            </p>
+            <div class="inline-block">
+              <select data-te-select-init id="as_box">
+                <option value="1">Start</option>
+                {% for i in range(1,7) %}
+                <option value="{{ i }}">Ascension Phase {{ i }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div
+            class="mb-[0.125rem] min-h-[1.5rem] flex justify-between items-center my-2"
+          >
+            <p
+              class="inline-block pl-[0.15rem] hover:cursor-pointer"
+              for="ts1_box"
+            >
+              Talent Skill 1:
+            </p>
+            <div class="inline-block">
+              <select data-te-select-init id="ts1_box">
+                <option value="1">Start</option>
+                {% for i in range(2,11) %}
+                <option value="{{ i }}">Talent Level {{ i }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div
+            class="mb-[0.125rem] min-h-[1.5rem] flex justify-between items-center my-2"
+          >
+            <p
+              class="inline-block pl-[0.15rem] hover:cursor-pointer"
+              for="ts2_box"
+            >
+              Talent Skill 2:
+            </p>
+            <div class="inline-block">
+              <select data-te-select-init id="ts2_box">
+                <option value="1">Start</option>
+                {% for i in range(2,11) %}
+                <option value="{{ i }}">Talent Level {{ i }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div
+            class="mb-[0.125rem] min-h-[1.5rem] flex justify-between items-center my-2"
+          >
+            <p
+              class="inline-block pl-[0.15rem] hover:cursor-pointer"
+              for="ts3_box"
+            >
+              Talent Skill 3:
+            </p>
+            <div class="inline-block">
+              <select data-te-select-init id="ts3_box">
+                <option value="1">Start</option>
+                {% for i in range(2,11) %}
+                <option value="{{ i }}">Talent Level {{ i }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div
+          class="w-full self-center border-slate-100 border-solid rounded-sm border-2 my-2"
+        >
+          <div
+            class="z-0 grid grid-cols-3 w-full gap-1 self-center my-2 p-1 h-10"
+            id="list"
+          ></div>
+          <div
+            class="z-0 grid grid-cols-3 w-full gap-1 border-slate-100 border-solid border-t-2 rounded-sm self-center p-1 h-10"
+            id="list_total"
+          >
+            <p class="font-bold text-left p-1">Total:</p>
+          </div>
         </div>
       </div>
-      <div class="flex flex-col w-2/3 p-2 border-slate-100 border-solid border-y-4 border-r-4 border-l-2">
+      <div
+        class="flex flex-col w-2/3 p-2 border-slate-100 border-solid border-y-4 border-r-4 border-l-2"
+      >
         <div class="max-w-full w-full">
           <h3 class="text-xl font-bold">Skill Talents</h3>
-          <ul class="w-96"></ul>
-          {% for i in char.skillTalents %}
-          <li class="w-full border-b-2 border-neutral-100 border-opacity-100 py-4 dark:border-opacity-50 text-left pl-4">
-            {{i.name}}
-          </li>
-          {% endfor %}
+          <ul class="w-full mb-4">
+            {% for i in range(char.skillTalents| length) %}
+            <li
+              class="w-full border-b-2 border-neutral-100 border-opacity-100 py-4 dark:border-opacity-50 text-left pl-4 flex justify-between px-2 align-middle"
+            >
+              <div>
+                <p class="inline-block self-center">
+                  <img
+                    class="w-7 object-fill inline-block"
+                    referrerpolicy="no-referrer"
+                    src="{% if img.skillTalents[i]==False %}{{ url_for('static',filename='assets/images/False.png') }}{% else %}{{ img.skillTalents[i] }}{% endif %}"
+                    alt=""
+                  />
+                  {% if char.skillTalents[i].name!='' %}{{
+                  char.skillTalents[i].name }}{% else %}(Can't find name){%
+                  endif %}
+                </p>
+                <p class="text-xs text-left text-slate-200 self-center pt-1">
+                  {% if char.skillTalents[i].unlock!='' %}{{
+                  char.skillTalents[i].unlock }}{% else %}(Can't find info){%
+                  endif %}
+                </p>
+              </div>
+              <button
+                class="inline-block rounded bg-primary px-2 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                type="button"
+                data-te-collapse-init
+                data-te-ripple-init
+                data-te-ripple-color="light"
+                data-te-target="#collapse_s{{ i }}"
+                aria-expanded="false"
+                aria-controls="collapse_s{{ i }}"
+              >
+                <img
+                  class="w-7 object-fill"
+                  src="{{ url_for('static',filename='assets/images/Place_3.png') }}"
+                  alt=""
+                />
+              </button>
+            </li>
+            <div
+              class="!visible hidden"
+              id="collapse_s{{ i }}"
+              data-te-collapse-item
+            >
+              <div
+                class="block rounded-lg bg-zinc-900 p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]"
+              >
+                <p class="text-slate-200 text-left">
+                  Description: {% if char.skillTalents[i].description!='' %}{{
+                  char.skillTalents[i].description }}{% else %}(Can't find
+                  info){% endif %}
+                </p>
+                <br />
+                {% for o in range(char.skillTalents[i].upgrades| length) %}
+                <p class="text-slate-200 text-left text-xs">
+                  {{ char.skillTalents[i].upgrades[o].name }}: {{
+                  char.skillTalents[i].upgrades[o].value }}
+                </p>
+                {% endfor %}
+              </div>
+            </div>
+            {% endfor %}
           </ul>
           <h3 class="text-xl font-bold">Passive Talents</h3>
-          <ul class="w-96"></ul>
-          {% for i in char.passiveTalents %}
-          <li class="w-full border-b-2 border-neutral-100 border-opacity-100 py-4 dark:border-opacity-50 text-left pl-4">
-            {{i.name}}
-          </li>
-          {% endfor %}
+          <ul class="w-full mb-4">
+            {% for i in range(char.passiveTalents| length) %}
+            <li
+              class="w-full border-b-2 border-neutral-100 border-opacity-100 py-4 dark:border-opacity-50 text-left pl-4 flex justify-between px-2 align-middle"
+            >
+              <div>
+                <p class="inline-block self-center">
+                  <img
+                    class="w-7 object-fill inline-block"
+                    referrerpolicy="no-referrer"
+                    src="{% if img.passiveTalents[i]==False %}{{ url_for('static',filename='assets/images/False.png') }}{% else %}{{ img.passiveTalents[i] }}{% endif %}"
+                    alt=""
+                  />
+                  {% if char.passiveTalents[i].name!='' %}{{
+                  char.passiveTalents[i].name }}{% else %}(Can't find name){%
+                  endif %}
+                </p>
+                <p class="text-xs text-left text-slate-200 self-center pt-1">
+                  {% if char.passiveTalents[i].unlock!='' %}{% if
+                  char.passiveTalents[i].unlock!='Unlocked Automatically'
+                  %}Unlock: {{ char.passiveTalents[i].unlock }}{% else %}Open
+                  World Passive{% endif %}{% else %}(Can't find info){% endif %}
+                </p>
+              </div>
+              <button
+                class="inline-block rounded bg-primary px-2 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                type="button"
+                data-te-collapse-init
+                data-te-ripple-init
+                data-te-ripple-color="light"
+                data-te-target="#collapse_p{{ i }}"
+                aria-expanded="false"
+                aria-controls="collapse_p{{ i }}"
+              >
+                <img
+                  class="w-7 object-fill"
+                  src="{{ url_for('static',filename='assets/images/Place_3.png') }}"
+                  alt=""
+                />
+              </button>
+            </li>
+            <div
+              class="!visible hidden"
+              id="collapse_p{{ i }}"
+              data-te-collapse-item
+            >
+              <div
+                class="block rounded-lg bg-zinc-900 p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]"
+              >
+                <p class="text-slate-200 text-left">
+                  Description: {% if char.passiveTalents[i].description!='' %}{{
+                  char.passiveTalents[i].description }}{% else %}(Can't find
+                  info){% endif %}
+                </p>
+              </div>
+            </div>
+            {% endfor %}
           </ul>
           <h3 class="text-xl font-bold">Constellations</h3>
-          <ul class="w-96"></ul>
-          {% for i in char.constellations %}
-          <li class="w-full border-b-2 border-neutral-100 border-opacity-100 py-4 dark:border-opacity-50 text-left pl-4">
-            {{i.name}}
-          </li>
-          {% endfor %}
+          <ul class="w-full mb-4">
+            {% for i in range(char.constellations| length) %}
+            <li
+              class="w-full border-b-2 border-neutral-100 border-opacity-100 py-4 dark:border-opacity-50 text-left pl-4 flex justify-between px-2 align-middle"
+            >
+              <div>
+                <p class="inline-block self-center">
+                  <img
+                    class="w-7 object-fill inline-block"
+                    referrerpolicy="no-referrer"
+                    src="{% if img.constellations[i]==False %}{{ url_for('static',filename='assets/images/False.png') }}{% else %}{{ img.constellations[i] }}{% endif %}"
+                    alt=""
+                  />
+                  {% if char.constellations[i].name!='' %}{{
+                  char.constellations[i].name }}{% else %}(Can't find name){%
+                  endif %}
+                </p>
+                <p class="text-xs text-left text-slate-200 self-center pt-1">
+                  Unlock: {% if char.constellations[i].unlock!='' %}{{
+                  char.constellations[i].unlock }}{% else %}(Can't find info){%
+                  endif %}
+                </p>
+              </div>
+              <button
+                class="inline-block rounded bg-primary px-2 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                type="button"
+                data-te-collapse-init
+                data-te-ripple-init
+                data-te-ripple-color="light"
+                data-te-target="#collapse_c{{ i }}"
+                aria-expanded="false"
+                aria-controls="collapse_c{{ i }}"
+              >
+                <img
+                  class="w-7 object-fill"
+                  src="{{ url_for('static',filename='assets/images/Place_3.png') }}"
+                  alt=""
+                />
+              </button>
+            </li>
+            <div
+              class="!visible hidden"
+              id="collapse_c{{ i }}"
+              data-te-collapse-item
+            >
+              <div
+                class="block rounded-lg bg-zinc-900 p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]"
+              >
+                <p class="text-slate-200 text-left">
+                  Description: {% if char.constellations[i].description!='' %}{{
+                  char.constellations[i].description }}{% else %}(Can't find
+                  info){% endif %}
+                </p>
+              </div>
+            </div>
+            {% endfor %}
           </ul>
         </div>
       </div>

@@ -7,6 +7,7 @@ import re
 import serverside
 import clientside as cs
 import genshinAPI as gAPI
+import wikiaAPI as wiki
 import os
 
 def c_print(c):
@@ -192,7 +193,9 @@ def character_star(check):
 def character(char):
     list=gAPI.get_character_list()
     if char in list:
-        return render_template("character.html",char=gAPI.get_character(char))
+        char_info=gAPI.get_character(char)
+        img_list=char_info.img_list
+        return render_template("character.html",char=char_info,img=img_list)
     else:
         abort(404)
 
