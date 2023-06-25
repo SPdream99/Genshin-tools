@@ -156,6 +156,7 @@ def mail_verify():
                     return render_template("verify_mail.html",msg=msg,user=session["username"],mail=check[1],onCooldown=check[2])
                 else:
                     if ss.verify(session["username"]):
+                        flash("Your email have been verified")
                         return redirect(url_for("index"))
             abort(500)
     if ss.check_loggedin():
