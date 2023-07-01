@@ -1,0 +1,32 @@
+{
+  "exp": {
+    "id": "exp",
+    "name": "Character EXP",
+    "desciption": "Character EXP, used to level up characters.",
+    "source": [
+      "Quests",
+      "Character EXP Material",
+      "Defeating Enemies",
+      "Claiming Ley Line Blossoms from Bosses"
+    ],
+    "img": "exp"
+  },
+  "mora": {
+    "id": "mora",
+    "name": "Mora",
+    "desciption": "Common currency. The one language everybody speaks.",
+    "source": [
+      "Blossoms of Wealth",
+      "Quest",
+      "Monsters",
+      "Chests",
+      "Events",
+      "Ekaterina",
+      "HoYoLAB Community Daily Check-In",
+      "Investigation",
+      "Expeditions",
+      "Parametric Transformer"
+    ],
+    "img": "mora"
+  }
+}

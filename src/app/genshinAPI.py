@@ -28,7 +28,7 @@ def get_character(name=None):
         # r = requests.get(lo[name]["link"])
         # o = json.loads(r.text)
         o = lo[name]
-        return Character(name,o["name"],get_character_image(o["name"],"Full_Wish","Card"),o["title"] if("title" in o) else "No title",o["vision"],o["weapon"],o["nation"],o["affiliation"],o["rarity"],o["constellation"],get_character_image(o["constellation"],""),o["skillTalents"],o["passiveTalents"],o["constellations"],o["img_list"])
+        return Character(name,o["name"],get_character_image(o["name"],"Full_Wish","Card"),o["title"] if("title" in o) else "No title",o["vision"],o["weapon"],o["nation"],o["affiliation"],o["rarity"],o["constellation"],get_character_image(o["constellation"],""),o["skillTalents"],o["passiveTalents"],o["constellations"],o["img_list"],["exp","mora"])
     else:
         try:
             if(os.stat("./static/assets/character_list.json").st_size > 0):
@@ -89,7 +89,7 @@ def update_list():
                                                 lo.update({data[i]:o})
         except:
             pass
-    if len(o)>0:
+    if len(lo)>0:
         f = open("./static/assets/character_list.json", "w")
         json.dump(lo, f)
         f.close()
@@ -115,8 +115,27 @@ def get_weapon_list():
     data = r.text
     return json.loads(data)
 
+def get_mats_list():
+    lo={}
+    if(os.stat("./static/assets/material_list.json").st_size > 0):
+        f=open("./static/assets/material_list.json","r")
+        lo=json.load(f)
+        f.close()
+    return lo
+
+def get_need_mats(l):
+    o_list=get_mats_list()
+    o={}
+    g=[]
+    for i in l:
+        if i in o_list:
+            o.update({i:o_list[i]})
+            g.append(i)
+    o.update({"meta":g})
+    return o
+
 class Character:
-  def __init__(self,i, name, img, title, vision, weapon, nation, aff, rarity, constellation,constellation_img,skillTalents,passiveTalents,constellations,img_list):
+  def __init__(self,i, name, img, title, vision, weapon, nation, aff, rarity, constellation,constellation_img,skillTalents,passiveTalents,constellations,img_list,mats):
     self.id = i
     self.name = name
     self.img = img
@@ -132,6 +151,7 @@ class Character:
     self.passiveTalents=passiveTalents
     self.constellations=constellations
     self.img_list=img_list
+    self.mats=mats
 class Weapon:
   def __init__(self, name):
     self.name = name
@@ -149,24 +169,43 @@ def get_skill_image(char):
                     t[x]=r[i][1]
         return t
     replace=[["Constellation_A-Another_Round?.png","Constellation_A—Another_Round?.png"],["Constellation_Chained_Reaction.png","Constellation_Chained_Reactions.png"]]
-    talent=[f"Talent_{(x['name'].replace(' ','_'))}.png" for x in char["skillTalents"]]
+    talent=[f"Talent_{(x['name'].replace(' ','_')).replace(':','')}.png" for x in char["skillTalents"]]
     talent[0]=f"{char['weapon_type'].capitalize()}_{char['vision_key'].capitalize()}.png"
     # talent=[f"""{''.join([y for y in x if y in string.ascii_letters + '_'+"'"+"-"+"!"])}.png""" for x in talent]
     # change(replace,talent)
 
-    p_talent=[f"Talent_{(x['name'].replace(' ','_'))}.png" for x in char["passiveTalents"]]
+    p_talent=[f"Talent_{(x['name'].replace(' ','_')).replace(':','')}.png" for x in char["passiveTalents"]]
     # p_talent=[f"""{''.join([y for y in x if y in string.ascii_letters + '_'+"'"+"-"+"!"])}.png""" for x in p_talent]
     # change(replace,p_talent)
 
-    c=[f"Constellation_{(x['name'].replace(' ','_'))}.png" for x in char["constellations"]]
+    c=[f"Constellation_{(x['name'].replace(' ','_')).replace(':','')}.png" for x in char["constellations"]]
     # c=[f"""{''.join([y for y in x if y in string.ascii_letters + '_'+"'"+"-"+"!"])}.png""" for x in c]
     c=change(replace,c)
-    print(talent[0])
     return {
         "weapon": wikiaAPI.get_image("gensin-impact",f"Icon_{(char['weapon_type']).capitalize()}.png"),
         "skillTalents":[wikiaAPI.get_image("gensin-impact",x) for x in talent],
         "passiveTalents":[wikiaAPI.get_image("gensin-impact",x) for x in p_talent],
         "constellations":[wikiaAPI.get_image("gensin-impact",x) for x in c],
         }
+
+def update_mats_list():
+    data = get_character_list()
+    lo={}
+    for i in range(len(data)):
+        try:
+            r = requests.get('{}/characters/{}/en.json'.format(link,data[i]))
+            if(r.text!="404: Not Found"):
+                o=json.loads(r.text)
+                o.update({})
+                lo.update({data[i]:o})
+        except:
+            pass
+    if len(lo)>0:
+        f = open("./static/assets/character_list.json", "w")
+        json.dump(lo, f)
+        f.close()
+    else:
+        print("None")
+    return lo
 # print(get_skill_image(get_character("klee")))
 # update_list()

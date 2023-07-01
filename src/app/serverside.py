@@ -142,3 +142,30 @@ class mysql:
             mysql.connection.commit()
             return [True,a]
         return [False]
+
+    def get_mats(self,account):
+        mysql=self.mysql
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM storage WHERE username = % s', ([account]))
+        account = cursor.fetchone()
+        return account
+
+    def set_mats(self,account,mat,quantity):
+        mysql=self.mysql
+        list=self.get_mats(account)
+        account=self.check_account(account)
+        if list and quantity>=0:
+            if list["items"]!=None:
+                c_list=json.loads(list["items"])
+            else:
+                c_list={}
+            if quantity==0:
+                c_list.pop(mat)
+            else:
+                c_list.update({mat: quantity})
+            c_list=json.dumps(c_list)
+            cursor = mysql.connection.cursor()
+            cursor.execute("UPDATE storage SET items=% s WHERE id=% s", (c_list, account["id"]))
+            mysql.connection.commit()
+            return True
+        return False

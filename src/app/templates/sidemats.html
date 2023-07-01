@@ -1,0 +1,24 @@
+{% block body %}
+<button
+  type="button"
+  class="bg-slate-800 w-fit rounded text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)]"
+  data-te-toggle="modal"
+  data-te-target="#side_{{ session['items'][o].id }}_modal"
+  data-te-ripple-init
+  data-te-ripple-color="light"
+  id="side_{{ session['items'][o].id }}"
+>
+  <p class="p-1 rounded-t relative text-xs font-bold">
+    {{ session['items'][o].name | upper }}
+  </p>
+  <img src=" {% if session['items'][o].img=="exp" %} {{
+  url_for('static',filename='assets/images/EXP.png') }} {% else %} {% if
+  session['items'][o].img=="mora" %} {{
+  url_for('static',filename='assets/images/Mora.png') }} {% else %} {{
+  session['items'][o].img }} {% endif %} {% endif %}" class="w-full rounded-lg
+  shadow-lg" alt="{{ session['items'][o].id }}" />
+  <p class="p-1 rounded-b relative text-xs font-bold">
+    {{ "{:,.2f}".format(session['quantity'][o]) }}
+  </p>
+</button>
+{% endblock %}

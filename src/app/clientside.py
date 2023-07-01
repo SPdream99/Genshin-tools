@@ -21,4 +21,6 @@ def logout(template):
     session.pop('id', None)
     session.pop('username', None)
     session.pop('isVerified',None)
+    session.pop('items',None)
+    session.pop('quantity',None)
     return remove_cookie('cre',template)

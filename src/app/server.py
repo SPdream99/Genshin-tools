@@ -9,6 +9,7 @@ import clientside as cs
 import genshinAPI as gAPI
 import wikiaAPI as wiki
 import os
+import json
 
 def c_print(c):
     print(c, file=sys.stderr)
@@ -46,12 +47,16 @@ def check_login():
         account=ss.check_account(session['username'])
         if account:
             check=ss.check_verify(session["username"])
-            if not check[0]:
-                session["isVerified"]=check[0]
-                return
+            session["isVerified"]=check[0]
+            if check[0]:
+                mats=ss.get_mats(session["username"])
+                mats=json.loads(mats["items"])
+                session["items"]=gAPI.get_need_mats(list(mats.keys()))
+                session["quantity"]=mats
             else:
-                session["isVerified"]=check[0]
-                return
+                session["items"]=None
+                session["quantity"]=None
+            return
         else:
             session.clear()
     if checked[0]:
@@ -190,13 +195,37 @@ def character_star(check):
         return jsonify(status_code=400, content="Please log in")
     return abort(500)
 
+@app.route('/material/change', methods =['GET', 'POST'])
+def material():
+    if ss.check_loggedin():
+        if session["isVerified"]:
+            if request.method == 'POST' and "id" in request.json and "quantity" in request.json:
+                set=ss.set_mats(session["username"], request.json["id"], request.json["quantity"])
+                if set:
+                    return jsonify(status_code=200, content={"message": f"material {request.json['id']}"})
+            if request.method == 'GET':
+                list=ss.get_mats(session["username"])
+                if list:
+                    return jsonify(status_code=200, content={"items":list["items"]})
+            return abort(500)
+        else:
+            if request.method == 'POST':
+                flash("Please verify your account")
+            return jsonify(status_code=400, content="Please verify your account")
+    else:
+        if request.method == 'POST'
+            flash("Please log in")
+        return jsonify(status_code=400, content="Please log in")
+    return abort(500)
+
 @app.route('/characters/<char>', methods =['GET', 'POST'])
 def character(char):
     list=gAPI.get_character_list()
     if char in list:
         char_info=gAPI.get_character(char)
         img_list=char_info.img_list
-        return render_template("character.html",char=char_info,img=img_list)
+        mats_list=gAPI.get_need_mats(char_info.mats)
+        return render_template("character.html",char=char_info,img=img_list,mats=mats_list)
     else:
         abort(404)
 

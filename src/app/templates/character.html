@@ -52,7 +52,7 @@
               Level:
             </p>
             <div class="inline-block">
-              <select data-te-select-init id="lv_box">
+              <select data-te-select-init id="lv_box" onchange="read_mat()">
                 <option value="1">Start</option>
                 {% for i in range(2,91) %}
                 <option value="{{ i }}">Lv.{{ i }}</option>
@@ -70,9 +70,9 @@
               Ascensions:
             </p>
             <div class="inline-block">
-              <select data-te-select-init id="as_box">
+              <select data-te-select-init id="as_box" onchange="read_mat()">
                 <option value="1">Start</option>
-                {% for i in range(1,7) %}
+                {% for i in range(2,8) %}
                 <option value="{{ i }}">Ascension Phase {{ i }}</option>
                 {% endfor %}
               </select>
@@ -88,7 +88,7 @@
               Talent Skill 1:
             </p>
             <div class="inline-block">
-              <select data-te-select-init id="ts1_box">
+              <select data-te-select-init id="ts1_box" onchange="read_mat()">
                 <option value="1">Start</option>
                 {% for i in range(2,11) %}
                 <option value="{{ i }}">Talent Level {{ i }}</option>
@@ -106,7 +106,7 @@
               Talent Skill 2:
             </p>
             <div class="inline-block">
-              <select data-te-select-init id="ts2_box">
+              <select data-te-select-init id="ts2_box" onchange="read_mat()">
                 <option value="1">Start</option>
                 {% for i in range(2,11) %}
                 <option value="{{ i }}">Talent Level {{ i }}</option>
@@ -124,7 +124,7 @@
               Talent Skill 3:
             </p>
             <div class="inline-block">
-              <select data-te-select-init id="ts3_box">
+              <select data-te-select-init id="ts3_box" onchange="read_mat()">
                 <option value="1">Start</option>
                 {% for i in range(2,11) %}
                 <option value="{{ i }}">Talent Level {{ i }}</option>
@@ -136,15 +136,12 @@
         <div
           class="w-full self-center border-slate-100 border-solid rounded-sm border-2 my-2"
         >
+          <p class="font-bold text-left p-2">Total:</p>
           <div
-            class="z-0 grid grid-cols-3 w-full gap-1 self-center my-2 p-1 h-10"
+            class="z-0 min-h-[4rem] grid grid-cols-3 w-full gap-2 self-center my-2 p-2 h-auto border-slate-100 border-solid border-y-2"
             id="list"
-          ></div>
-          <div
-            class="z-0 grid grid-cols-3 w-full gap-1 border-slate-100 border-solid border-t-2 rounded-sm self-center p-1 h-10"
-            id="list_total"
           >
-            <p class="font-bold text-left p-1">Total:</p>
+            {% for o in mats.meta %} {% include 'material.html' %} {% endfor %}
           </div>
         </div>
       </div>
