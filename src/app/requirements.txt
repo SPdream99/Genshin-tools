@@ -4,3 +4,4 @@ flask_mysqldb
 flask_mailing
 PyJWT
 hashlib
+bs4
