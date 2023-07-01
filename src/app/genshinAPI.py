@@ -1,5 +1,8 @@
+import re
 import requests, json, os
 import wikiaAPI
+from urllib.parse import unquote
+from bs4 import BeautifulSoup
 import string
 link="https://raw.githubusercontent.com/genshindev/api/mistress/assets/data"
 def get_character_list():
@@ -11,6 +14,17 @@ def get_character_list():
             o=data[i]["title"].lower()
             o=o.replace(" ","-").replace("(","").replace(")","")
             l.append(o)
+    return l
+
+def get_character_alt_list():
+    l={}
+    ban=['traveler','lumine','aether','crossover characters', 'event-exclusive characters', 'non-wish characters', 'playable characters by region', 'standard wish characters','traveler (unaligned)']
+    data=wikiaAPI.get_data("genshin-impact","en","Playable_Characters")
+    for i in range(len(data)):
+        if(data[i]["title"].lower() not in ban):
+            o=data[i]["title"].lower()
+            o=o.replace(" ","-").replace("(","").replace(")","")
+            l.update({o:data[i]["url"].split("wiki/")[1]})
     return l
 
 def get_character(name=None):
@@ -28,7 +42,7 @@ def get_character(name=None):
         # r = requests.get(lo[name]["link"])
         # o = json.loads(r.text)
         o = lo[name]
-        return Character(name,o["name"],get_character_image(o["name"],"Full_Wish","Card"),o["title"] if("title" in o) else "No title",o["vision"],o["weapon"],o["nation"],o["affiliation"],o["rarity"],o["constellation"],get_character_image(o["constellation"],""),o["skillTalents"],o["passiveTalents"],o["constellations"],o["img_list"],["exp","mora"])
+        return Character(name,o["name"],get_character_image(o["name"],"Full_Wish","Card"),o["title"] if("title" in o) else "No title",o["vision"],o["weapon"],o["nation"],o["affiliation"],o["rarity"],o["constellation"],get_character_image(o["constellation"],""),o["skillTalents"],o["passiveTalents"],o["constellations"],o["img_list"],o["mats"])
     else:
         try:
             if(os.stat("./static/assets/character_list.json").st_size > 0):
@@ -43,21 +57,72 @@ def get_character(name=None):
             lo=update_list()
             return lo
 
+def get_asc_tl(c):
+    asc=wikiaAPI.get_table("genshin-impact", c, "wikitable ascension-stats")
+    asc_l=[]
+    asc_o={}
+    for i in range(1,7):
+        asc_o[i]={}
+    tl=wikiaAPI.get_table("genshin-impact", c, "wikitable talent-table", True, 9)
+    if not "Talent" in str(tl[0]):
+        tl=wikiaAPI.get_table("genshin-impact", c, "wikitable talent-table", True, 8)
+        if not "Talent" in str(tl[0]):
+            tl = wikiaAPI.get_table("genshin-impact", c, "wikitable talent-table", True, 7)
+            if not "Talent" in str(tl[0]):
+                tl = wikiaAPI.get_table("genshin-impact", c, "wikitable talent-table", True, 6)
+                if not "Talent" in str(tl[0]):
+                    tl = wikiaAPI.get_table("genshin-impact", c, "wikitable talent-table", True, 10)
+                    if not "Talent" in str(tl[0]):
+                        tl = wikiaAPI.get_table("genshin-impact", c, "wikitable talent-table", True, 11)
+    tl_o = {}
+    for i in range(2,11):
+        tl_o[i]={}
+    for i in asc:
+        if i.has_attr('class'):
+            if str(i['class'])=="['ascension', 'mw-collapsible']":
+                asc_l.append(i)
+    for i in range(len(asc_l)):
+        name_l=asc_l[i].find_all("a")
+        quantity_l=asc_l[i].find_all("span",{"class":"card-text card-font"})
+        for p in range(len(name_l)):
+            asc_o[i+1].update({unquote(name_l[p]['href'].split("wiki/")[1].lower()):quantity_l[p].text})
+    tl_l = [tl[i] for i in range(len(tl)) if i!=0]
+    for i in range(len(tl_l)):
+        name_l=tl_l[i].find_all("a")
+        r=[]
+        for cs in name_l:
+            if not cs.parent.has_attr('class'):
+                r.append(cs)
+        name_l=r
+        quantity_l=tl_l[i].find_all("span",{"class":"card-text card-font"})
+        for p in range(len(name_l)):
+            tl_o[i+2].update({unquote(name_l[p]['href'].split("wiki/")[1].lower()):quantity_l[p].text})
+    p={}
+    p.update({"asc" : asc_o})
+    p.update({"tl": tl_o})
+    return p
+
 def update_list():
+    alt_data=get_character_alt_list()
     data = get_character_list()
     lo={}
     for i in range(len(data)):
-        try:
+            o={}
             r = requests.get('{}/characters/{}/en.json'.format(link,data[i]))
+            no=alt_data[data[i]]
+            if "traveler" in no.lower():
+                no="Traveler"
             if(r.text!="404: Not Found"):
                 o=json.loads(r.text)
                 o.update({'img_list':get_skill_image(o),'link':'{}/characters/{}/en.json'.format(link,data[i]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                o.update({"mats":get_asc_tl(no)})
                 lo.update({data[i]:o})
             else:
                 r = requests.get('{}/characters/{}/{}.json'.format(link,data[i],data[i]))
                 if(r.text!="404: Not Found"):
                     o=json.loads(r.text)
                     o.update({'img_list':get_skill_image(o),'link':'{}/characters/{}/{}.json'.format(link,data[i],data[i]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                    o.update({"mats":get_asc_tl(alt_data[data[i]])})
                     lo.update({data[i]:o})
                 else:
                     if("-" in data[i]):
@@ -65,6 +130,7 @@ def update_list():
                         if(r.text!="404: Not Found"):
                             o=json.loads(r.text)
                             o.update({'img_list':get_skill_image(o),'link':'{}/characters/{}/en.json'.format(link,data[i].split("-")[1]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                            o.update({"mats":get_asc_tl(alt_data[data[i]])})
                             lo.update({data[i]:o})
                         else:
                             if("-" in data[i]):
@@ -72,6 +138,7 @@ def update_list():
                                 if(r.text!="404: Not Found"):
                                     o=json.loads(r.text)
                                     o.update({'img_list':get_skill_image(o),'link':'{}/characters/{}/{}.json'.format(link,data[i].split("-")[1],data[i].split("-")[1]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                                    o.update({"mats":get_asc_tl(alt_data[data[i]])})
                                     lo.update({data[i]:o})
                                 else:
                                     if("-" in data[i]):
@@ -79,6 +146,7 @@ def update_list():
                                         if(r.text!="404: Not Found"):
                                             o=json.loads(r.text)
                                             o.update({'img_list':get_skill_image(o),'link':'{}/characters/{}/en.json'.format(link,data[i].split("-")[0]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                                            o.update({"mats":get_asc_tl(alt_data[data[i]])})
                                             lo.update({data[i]:o})
                                     else:
                                         if("-" in data[i]):
@@ -86,9 +154,9 @@ def update_list():
                                             if(r.text!="404: Not Found"):
                                                 o=json.loads(r.text)
                                                 o.update({'img_list':get_skill_image(o),'link':'{}/characters/{}/{}.json'.format(link,data[i].split("-")[1],data[i].split("-")[0]),'f_img':get_character_image(o["name"],"Full_Wish","Card"),'img':get_character_image(o["name"],"Card","Full_Wish"),'c_img':get_character_image(o["constellation"],"")})
+                                                o.update({"mats":get_asc_tl(alt_data[data[i]])})
                                                 lo.update({data[i]:o})
-        except:
-            pass
+
     if len(lo)>0:
         f = open("./static/assets/character_list.json", "w")
         json.dump(lo, f)
@@ -121,6 +189,8 @@ def get_mats_list():
         f=open("./static/assets/material_list.json","r")
         lo=json.load(f)
         f.close()
+    else:
+        lo=update_mats_list()
     return lo
 
 def get_need_mats(l):
@@ -151,7 +221,18 @@ class Character:
     self.passiveTalents=passiveTalents
     self.constellations=constellations
     self.img_list=img_list
-    self.mats=mats
+    self.uplist=mats
+    o=[]
+    for i in self.uplist["asc"]:
+        for r in self.uplist["asc"][i]:
+            o.append(r)
+    for i in self.uplist["tl"]:
+        for r in self.uplist["tl"][i]:
+            o.append(r)
+    o.append("exp")
+    o=list(set(o))
+    self.mats=o
+
 class Weapon:
   def __init__(self, name):
     self.name = name
@@ -189,19 +270,118 @@ def get_skill_image(char):
         }
 
 def update_mats_list():
-    data = get_character_list()
-    lo={}
+    def remove_tags(text):
+        CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
+        cleantext = re.sub(CLEANR, '', text)
+        return cleantext
+    data=wikiaAPI.get_data("genshin-impact","en","Character_Development_Items")
+    ban=["Category:Character Development Items by Type","Character Development Item","Material"]
+    lo={
+  "exp": {
+    "id": "exp",
+    "name": "Character EXP",
+    "desciption": "Character EXP, used to level up characters.",
+    "source": [
+      "Quests",
+      "Character EXP Material",
+      "Defeating Enemies",
+      "Claiming Ley Line Blossoms from Bosses"
+    ],
+    "img": "exp"
+  },
+  "mora": {
+    "id": "mora",
+    "name": "Mora",
+    "desciption": "Common currency. The one language everybody speaks.",
+    "source": [
+      "Blossoms of Wealth",
+      "Quest",
+      "Monsters",
+      "Chests",
+      "Events",
+      "Ekaterina",
+      "HoYoLAB Community Daily Check-In",
+      "Investigation",
+      "Expeditions",
+      "Parametric Transformer"
+    ],
+    "img": "mora"
+  },
+  "crown-of-insight": {
+    "id": "crown-of-insight",
+    "name": "Crown of Insight",
+    "desciption": "Once a medium for the storage and transfer of wisdom in ancient times. Now wisdom is found in ancient texts and in profound speech. Nevertheless, this Crown of Insight must still be able to impart some transcendent power and wisdom to its bearer.",
+    "source": ["Events", "Offering Systems"],
+    "img": "https://static.wikia.nocookie.net/gensin-impact/images/0/04/Item_Crown_of_Insight.png"
+  }
+}
     for i in range(len(data)):
-        try:
-            r = requests.get('{}/characters/{}/en.json'.format(link,data[i]))
-            if(r.text!="404: Not Found"):
-                o=json.loads(r.text)
-                o.update({})
-                lo.update({data[i]:o})
-        except:
-            pass
+        if not data[i]["title"] in ban and not "Category" in data[i]["title"]:
+            id=data[i]["id"]
+            r = wikiaAPI.get_detail("genshin-impact",data[i]["url"].split("wiki/")[1])
+            if "pageprops" in r["query"]["pages"][str(id)]:
+                o=json.loads(r["query"]["pages"][str(id)]["pageprops"]["infoboxes"])
+                o=o[0]["data"]
+                s={}
+                n=(unquote(data[i]["url"].split("wiki/")[1])).replace('"',"").lower()
+                s.update({"id":n})
+                s.update({"name":(unquote(remove_tags([a["data"]["value"] for a in o if a['type'] == "title"][0])))})
+                b=""
+                for a in o:
+                    if a["type"]=="group":
+                        if "'label': 'Description'," in str(a):
+                            b=a["data"]["value"][0]["data"]["value"][0]["data"]["value"][0]["data"]["value"]
+                            break
+                s.update({"desciption": unquote(remove_tags(b))})
+                l = []
+                for a in o:
+                    if a["type"] == "group":
+                        if "'label': 'How to Obtain'," in str(a):
+                            b = a["data"]["value"][0]["data"]["value"][0]["data"]["value"]
+                            for c in b:
+                                l.append(unquote(remove_tags(c["data"]["value"])))
+                            break
+                s.update({"source": l})
+                s.update({"img": [a["data"][0]["url"] for a in o if a['type'] == "image"][0].split("/revision")[0]})
+                lo.update({n:s})
+                print("ok")
+    data=wikiaAPI.get_data("genshin-impact","en","Materials")
+    for i in range(len(data)):
+        if not data[i]["title"] in ban and not "Category" in data[i]["title"]:
+            id=data[i]["id"]
+            r = wikiaAPI.get_detail("genshin-impact",data[i]["url"].split("wiki/")[1])
+            if "pageprops" in r["query"]["pages"][str(id)]:
+                o=json.loads(r["query"]["pages"][str(id)]["pageprops"]["infoboxes"])
+                o=o[0]["data"]
+                s={}
+                n=(unquote(data[i]["url"].split("wiki/")[1])).replace('"',"").lower()
+                s.update({"id":n})
+                s.update({"name":(unquote(remove_tags([a["data"]["value"] for a in o if a['type'] == "title"][0])))})
+                b=""
+                for a in o:
+                    if a["type"]=="group":
+                        if "'label': 'Description'," in str(a):
+                            b=a["data"]["value"][0]["data"]["value"][0]["data"]["value"][0]["data"]["value"]
+                            break
+                s.update({"desciption": unquote(remove_tags(b))})
+                l = []
+                for a in o:
+                    if a["type"] == "group":
+                        if "'label': 'How to Obtain'," in str(a):
+                            b = a["data"]["value"][0]["data"]["value"][0]["data"]["value"]
+                            for c in b:
+                                l.append(unquote(remove_tags(c["data"]["value"])))
+                            break
+                s.update({"source": l})
+                ls=[a["data"][0]["url"] for a in o if a['type'] == "image"]
+                if len(ls)>0:
+                    s.update({"img": [a["data"][0]["url"] for a in o if a['type'] == "image"][0].split("/revision")[0]})
+                else:
+                    s.update({"img": "mora"})
+                lo.update({n:s})
+                print("ok")
     if len(lo)>0:
-        f = open("./static/assets/character_list.json", "w")
+        f = open("./static/assets/material_list.json", "w")
         json.dump(lo, f)
         f.close()
     else:
@@ -209,3 +389,4 @@ def update_mats_list():
     return lo
 # print(get_skill_image(get_character("klee")))
 # update_list()
+# update_mats_list()

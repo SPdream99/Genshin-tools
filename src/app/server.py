@@ -213,7 +213,7 @@ def material():
                 flash("Please verify your account")
             return jsonify(status_code=400, content="Please verify your account")
     else:
-        if request.method == 'POST'
+        if request.method == 'POST':
             flash("Please log in")
         return jsonify(status_code=400, content="Please log in")
     return abort(500)
@@ -225,7 +225,11 @@ def character(char):
         char_info=gAPI.get_character(char)
         img_list=char_info.img_list
         mats_list=gAPI.get_need_mats(char_info.mats)
-        return render_template("character.html",char=char_info,img=img_list,mats=mats_list)
+        uplist={}
+        uplist.update({"list":char_info.uplist})
+        uplist.update({"meta":char_info.mats})
+        uplist=str(uplist)
+        return render_template("character.html",char=char_info,img=img_list,mats=mats_list,uplist=uplist)
     else:
         abort(404)
 

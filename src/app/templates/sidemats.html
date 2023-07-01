@@ -18,7 +18,7 @@
   session['items'][o].img }} {% endif %} {% endif %}" class="w-full rounded-lg
   shadow-lg" alt="{{ session['items'][o].id }}" />
   <p class="p-1 rounded-b relative text-xs font-bold">
-    {{ "{:,.2f}".format(session['quantity'][o]) }}
+    {{ "{:,.2f}".format(session['quantity'][o]).replace(".00","") }}
   </p>
 </button>
 {% endblock %}

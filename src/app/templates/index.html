@@ -1,11 +1,11 @@
 {% extends 'base.html' %} {% block title %} Main {% endblock %} {% block content
 %}
 <div
-  class="bg-neutral-50 py-9 px-6 text-center bg-cover"
+  class="bg-neutral-50 py-9 px-6 text-center bg-cover backdrop-blur-sm shadow-sm"
   style="background-image: url('{{ url_for('static',filename='assets/images/background.jpg') }}')"
 >
   <h1
-    class="mt-2 mb-16 text-5xl font-bold tracking-tight md:text-6xl xl:text-7xl bg-slate-200 p-10"
+    class="mt-2 mb-16 text-5xl font-bold tracking-tight md:text-6xl xl:text-7xl bg-slate-200 p-10 rounded-sm"
   >
     Genshin <br /><span class="text-primary">Tools</span>
   </h1>
@@ -78,7 +78,7 @@
         </div>
         <h5 class="mb-4 text-lg font-bold">Personalize</h5>
         <p class="text-neutral-500 dark:text-neutral-300">
-          You can feel like being as home, do whatever you want.
+          Everything is so simple, do whatever you want.
         </p>
       </div>
     </div>

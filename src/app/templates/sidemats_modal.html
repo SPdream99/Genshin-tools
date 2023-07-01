@@ -37,7 +37,7 @@
         <div class="text-left quantity mt-10 mb-4">
           <p class="font-bold inline">Own:</p>
           <p class="inline ml-1">
-            {{ "{:,.2f}".format(session['quantity'][o]) }}
+            {{ "{:,.2f}".format(session['quantity'][o]).replace(".00","") }}
           </p>
         </div>
         <div class="p-3 self-center">
