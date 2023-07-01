@@ -20,13 +20,14 @@
   #### Follow this list:
   - Make a virtual environment with venv (optional)
   - Get required modules from requirements.txt
+  - Make sure to check inside static/node_modules and install packages
   - Make a MySQL server and run init.sql
   - Create flask needed folders, make server.py the default app
   - Check the app config in server.py and change anything you see fit
  
 - ### How to run
   #### Follow this list:
-  - Run update_list from GenshinAPI.py
+  - Run update_list and update_mats_list from GenshinAPI.py for first time running or new contents update
   - Set email and password for flask mailing in the OS environment, set with venv if you are using it.
   - Enter flask run
  
