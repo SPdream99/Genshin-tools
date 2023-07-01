@@ -33,7 +33,7 @@
 
 ## Credits
 - https://genshin-impact.fandom.com/
-- https://github.com/genshindev/api
+- https://github.com/genshindev/api/
 
 ## Copyright
 Content is available under Creative Commons Attribution-NonCommercial-ShareAlike unless otherwise noted, Genshin Impact content and materials are trademarks and copyrights of miHoYo Co., Ltd. or its licensors. All rights reserved.
