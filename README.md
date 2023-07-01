@@ -32,6 +32,7 @@
   - Enter flask run
 
 ## Credits
+- All images are from the internet
 - https://genshin-impact.fandom.com/
 - https://github.com/genshindev/api/
 
