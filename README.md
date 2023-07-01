@@ -30,7 +30,11 @@
   - Run update_list and update_mats_list from GenshinAPI.py for first time running or new contents update
   - Set email and password for flask mailing in the OS environment, set with venv if you are using it.
   - Enter flask run
- 
+
+## Credits
+- https://genshin-impact.fandom.com/
+- https://github.com/genshindev/api
+
 ## Copyright
 Content is available under Creative Commons Attribution-NonCommercial-ShareAlike unless otherwise noted, Genshin Impact content and materials are trademarks and copyrights of miHoYo Co., Ltd. or its licensors. All rights reserved.
 
