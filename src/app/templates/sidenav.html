@@ -34,8 +34,8 @@
             Logout
           </button></a
         >
-        {% if session.isVerified is defined: %} {% if session.items is defined:
-        %}
+        {% if session.isVerified is defined: %} {% if session.isVerified: %}{%
+        if session.items is defined: %}
         <div
           class="w-full self-center border-slate-100 border-solid rounded-sm border-2 my-2"
         >
@@ -48,7 +48,7 @@
             %} {% endfor %}
           </div>
         </div>
-        {% endif %} {% endif %} {% else %}
+        {% endif %} {% endif %}{% endif %} {% else %}
         <a href="/login">
           <button
             type="button"
