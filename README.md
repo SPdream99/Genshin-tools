@@ -29,6 +29,7 @@
   #### Follow this list:
   - Run update_list and update_mats_list from GenshinAPI.py for first time running or new contents update
   - Set email and password for flask mailing in the OS environment, set with venv if you are using it.
+  - Start a port for MySQL Database
   - Enter flask run
 
 ## Credits
