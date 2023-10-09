@@ -20,11 +20,11 @@ else:
     mail_os=False
 
 app = Flask(__name__)
-app.secret_key = 'Itsnew'
+app.secret_key = 'Your-secret-key-here'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '123'
-app.config['MYSQL_DB'] = 'data'
+app.config['MYSQL_PASSWORD'] = 'Your-mysql-password-here'
+app.config['MYSQL_DB'] = 'Mysql-db-name-here'
 if mail_os:
     app.config['MAIL_SERVER']='smtp.gmail.com'
     app.config['MAIL_PORT'] = 587
