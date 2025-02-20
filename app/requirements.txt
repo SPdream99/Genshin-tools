@@ -3,4 +3,5 @@ requests
 flask_mysqldb
 flask_mailing
 PyJWT
+mysqlclient
 bs4
